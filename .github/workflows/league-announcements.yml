@@ -6,8 +6,16 @@ on:
 jobs:
   announce:
     runs-on: ubuntu-latest
+
     steps:
       - name: Send Discord Webhook
-        env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_LEAGUE_ANNOUNCEMENTS }}
-        run: curl -H "Content-Type: application/json" -X POST -d "{\"content\":\"ACFA League test: GitHub Actions is connected successfully.\"}" "$WEBHOOK_URL"
+        uses: fjogeleit/http-request-action@v1
+
+        with:
+          url: ${{ secrets.DISCORD_LEAGUE_ANNOUNCEMENTS }}
+          method: POST
+          customHeaders: '{"Content-Type":"application/json"}'
+          data: |
+            {
+              "content": "⚔️ ACFA League Test\n\nGitHub is connected successfully!"
+            }
