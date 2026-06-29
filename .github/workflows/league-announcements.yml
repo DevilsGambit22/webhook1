@@ -4,32 +4,38 @@ on:
   workflow_dispatch:
     inputs:
       type:
-        description: "Update type"
+        description: "League update type"
         required: true
-        default: "Announcement"
+        default: "Season Announcement"
         type: choice
         options:
-          - Announcement
-          - Standings
+          - Season Announcement
+          - Round Pairings
           - Match Result
+          - Standings Update
           - Bracket Update
-          - Reminder
+          - Owner Reminder
           - Hall of Honor
+          - Emergency Notice
       title:
-        description: "Announcement title"
+        description: "Title"
         required: true
         default: "ACFA League Season 1"
       message:
-        description: "Announcement message"
+        description: "Main message"
         required: true
         default: "Fight for Your Club. Earn Your Legacy."
+      link:
+        description: "Optional link"
+        required: false
+        default: ""
 
 jobs:
-  send-discord-update:
+  send-league-update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send ACFA League Discord Update
+      - name: Send ACFA League Update
         uses: fjogeleit/http-request-action@v1
         with:
           url: ${{ secrets.DISCORD_LEAGUE_ANNOUNCEMENTS }}
@@ -50,8 +56,13 @@ jobs:
                       "inline": true
                     },
                     {
-                      "name": "Motto",
+                      "name": "League Motto",
                       "value": "Fight for Your Club. Earn Your Legacy.",
+                      "inline": false
+                    },
+                    {
+                      "name": "Link",
+                      "value": "${{ github.event.inputs.link }}",
                       "inline": false
                     }
                   ],
