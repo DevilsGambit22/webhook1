@@ -1,0 +1,26 @@
+name: League Season Announcements
+
+on:
+  workflow_dispatch:
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Discord Announcement
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_LEAGUE_ANNOUNCEMENTS }}
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "username":"ACFA League",
+            "avatar_url":"https://raw.githubusercontent.com/DevilsGambit22/ACFAL-logo/main/logo.png",
+            "content":"⚔️ **ACFA League Test** ⚔️
+
+This is the first automated announcement from ACFA COMMS.
+
+Fight for Your Club. Earn Your Legacy."
+          }' \
+          "$WEBHOOK"
