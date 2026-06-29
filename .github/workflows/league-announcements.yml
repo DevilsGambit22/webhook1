@@ -1,21 +1,63 @@
-name: League Season Announcements
+name: ACFA League Command Center
 
 on:
   workflow_dispatch:
+    inputs:
+      type:
+        description: "Update type"
+        required: true
+        default: "Announcement"
+        type: choice
+        options:
+          - Announcement
+          - Standings
+          - Match Result
+          - Bracket Update
+          - Reminder
+          - Hall of Honor
+      title:
+        description: "Announcement title"
+        required: true
+        default: "ACFA League Season 1"
+      message:
+        description: "Announcement message"
+        required: true
+        default: "Fight for Your Club. Earn Your Legacy."
 
 jobs:
-  announce:
+  send-discord-update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send Discord Webhook
+      - name: Send ACFA League Discord Update
         uses: fjogeleit/http-request-action@v1
-
         with:
           url: ${{ secrets.DISCORD_LEAGUE_ANNOUNCEMENTS }}
           method: POST
           customHeaders: '{"Content-Type":"application/json"}'
           data: |
             {
-              "content": "⚔️ ACFA League Test\n\nGitHub is connected successfully!"
+              "username": "ACFA League",
+              "embeds": [
+                {
+                  "title": "⚔️ ${{ github.event.inputs.title }}",
+                  "description": "${{ github.event.inputs.message }}",
+                  "color": 13632027,
+                  "fields": [
+                    {
+                      "name": "Update Type",
+                      "value": "${{ github.event.inputs.type }}",
+                      "inline": true
+                    },
+                    {
+                      "name": "Motto",
+                      "value": "Fight for Your Club. Earn Your Legacy.",
+                      "inline": false
+                    }
+                  ],
+                  "footer": {
+                    "text": "ACFA League Command Center"
+                  }
+                }
+              ]
             }
